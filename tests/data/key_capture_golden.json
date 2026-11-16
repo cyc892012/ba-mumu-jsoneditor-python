@@ -1,0 +1,1042 @@
+{
+  "main_window": {
+    "width": 640,
+    "isReadOnly": true,
+    "placeholder": "按键",
+    "alignment_center": true,
+    "rows": [
+      {
+        "key": "d",
+        "text": "D",
+        "vk": 68,
+        "cb": []
+      },
+      {
+        "key": "a",
+        "text": "A",
+        "vk": 65,
+        "cb": []
+      },
+      {
+        "key": "Z",
+        "text": "Z",
+        "vk": 90,
+        "cb": []
+      },
+      {
+        "key": "1",
+        "text": "1",
+        "vk": 49,
+        "cb": []
+      },
+      {
+        "key": "9",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777264>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777269>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777275>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777276>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777216>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": " ",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "\t",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "\r",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777221>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777219>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777235>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777237>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777234>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777236>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777232>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777233>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777238>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777239>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777222>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777223>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777248>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777249>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<16777251>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<33554431>",
+        "text": "9",
+        "vk": 57,
+        "cb": []
+      },
+      {
+        "key": "<mouseClick>",
+        "text": "",
+        "vk": null,
+        "cb": []
+      }
+    ]
+  },
+  "adb_touch_form": {
+    "width": 640,
+    "isReadOnly": true,
+    "placeholder": "按键",
+    "alignment_center": true,
+    "rows": [
+      {
+        "key": "d",
+        "text": "D",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "D",
+            68,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "a",
+        "text": "A",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "A",
+            65,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "Z",
+        "text": "Z",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Z",
+            90,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "1",
+        "text": "1",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "1",
+            49,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "9",
+        "text": "9",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "9",
+            57,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777264>",
+        "text": "F1",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "F1",
+            112,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777269>",
+        "text": "F6",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "F6",
+            117,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777275>",
+        "text": "F12",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "F12",
+            123,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777276>",
+        "text": "F12",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777216>",
+        "text": "",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "",
+            0,
+            true
+          ]
+        ]
+      },
+      {
+        "key": " ",
+        "text": "Space",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Space",
+            32,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "\t",
+        "text": "Tab",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Tab",
+            9,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "\r",
+        "text": "Enter",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Enter",
+            13,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777221>",
+        "text": "Enter",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Enter",
+            13,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777219>",
+        "text": "Backspace",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Backspace",
+            8,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777235>",
+        "text": "Up",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Up",
+            38,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777237>",
+        "text": "Down",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Down",
+            40,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777234>",
+        "text": "Left",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Left",
+            37,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777236>",
+        "text": "Right",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Right",
+            39,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777232>",
+        "text": "Home",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Home",
+            36,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777233>",
+        "text": "End",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "End",
+            35,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777238>",
+        "text": "PageUp",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "PageUp",
+            33,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777239>",
+        "text": "PageDown",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "PageDown",
+            34,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777222>",
+        "text": "Insert",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Insert",
+            45,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777223>",
+        "text": "Delete",
+        "vk": null,
+        "cb": [
+          [
+            7,
+            "Delete",
+            46,
+            false
+          ]
+        ]
+      },
+      {
+        "key": "<16777248>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777249>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777251>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<33554431>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<mouseClick>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      }
+    ]
+  },
+  "key_preset_form": {
+    "width": 28,
+    "isReadOnly": true,
+    "placeholder": "按键",
+    "alignment_center": true,
+    "rows": [
+      {
+        "key": "d",
+        "text": "D",
+        "vk": null,
+        "cb": [
+          [
+            "D",
+            68
+          ]
+        ]
+      },
+      {
+        "key": "a",
+        "text": "A",
+        "vk": null,
+        "cb": [
+          [
+            "A",
+            65
+          ]
+        ]
+      },
+      {
+        "key": "Z",
+        "text": "Z",
+        "vk": null,
+        "cb": [
+          [
+            "Z",
+            90
+          ]
+        ]
+      },
+      {
+        "key": "1",
+        "text": "1",
+        "vk": null,
+        "cb": [
+          [
+            "1",
+            49
+          ]
+        ]
+      },
+      {
+        "key": "9",
+        "text": "9",
+        "vk": null,
+        "cb": [
+          [
+            "9",
+            57
+          ]
+        ]
+      },
+      {
+        "key": "<16777264>",
+        "text": "F1",
+        "vk": null,
+        "cb": [
+          [
+            "F1",
+            112
+          ]
+        ]
+      },
+      {
+        "key": "<16777269>",
+        "text": "F6",
+        "vk": null,
+        "cb": [
+          [
+            "F6",
+            117
+          ]
+        ]
+      },
+      {
+        "key": "<16777275>",
+        "text": "F12",
+        "vk": null,
+        "cb": [
+          [
+            "F12",
+            123
+          ]
+        ]
+      },
+      {
+        "key": "<16777276>",
+        "text": "F12",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777216>",
+        "text": "",
+        "vk": null,
+        "cb": [
+          [
+            "",
+            0
+          ]
+        ]
+      },
+      {
+        "key": " ",
+        "text": "Space",
+        "vk": null,
+        "cb": [
+          [
+            "Space",
+            32
+          ]
+        ]
+      },
+      {
+        "key": "\t",
+        "text": "Tab",
+        "vk": null,
+        "cb": [
+          [
+            "Tab",
+            9
+          ]
+        ]
+      },
+      {
+        "key": "\r",
+        "text": "Enter",
+        "vk": null,
+        "cb": [
+          [
+            "Enter",
+            13
+          ]
+        ]
+      },
+      {
+        "key": "<16777221>",
+        "text": "Enter",
+        "vk": null,
+        "cb": [
+          [
+            "Enter",
+            13
+          ]
+        ]
+      },
+      {
+        "key": "<16777219>",
+        "text": "Backspace",
+        "vk": null,
+        "cb": [
+          [
+            "Backspace",
+            8
+          ]
+        ]
+      },
+      {
+        "key": "<16777235>",
+        "text": "Up",
+        "vk": null,
+        "cb": [
+          [
+            "Up",
+            38
+          ]
+        ]
+      },
+      {
+        "key": "<16777237>",
+        "text": "Down",
+        "vk": null,
+        "cb": [
+          [
+            "Down",
+            40
+          ]
+        ]
+      },
+      {
+        "key": "<16777234>",
+        "text": "Left",
+        "vk": null,
+        "cb": [
+          [
+            "Left",
+            37
+          ]
+        ]
+      },
+      {
+        "key": "<16777236>",
+        "text": "Right",
+        "vk": null,
+        "cb": [
+          [
+            "Right",
+            39
+          ]
+        ]
+      },
+      {
+        "key": "<16777232>",
+        "text": "Home",
+        "vk": null,
+        "cb": [
+          [
+            "Home",
+            36
+          ]
+        ]
+      },
+      {
+        "key": "<16777233>",
+        "text": "End",
+        "vk": null,
+        "cb": [
+          [
+            "End",
+            35
+          ]
+        ]
+      },
+      {
+        "key": "<16777238>",
+        "text": "PageUp",
+        "vk": null,
+        "cb": [
+          [
+            "PageUp",
+            33
+          ]
+        ]
+      },
+      {
+        "key": "<16777239>",
+        "text": "PageDown",
+        "vk": null,
+        "cb": [
+          [
+            "PageDown",
+            34
+          ]
+        ]
+      },
+      {
+        "key": "<16777222>",
+        "text": "Insert",
+        "vk": null,
+        "cb": [
+          [
+            "Insert",
+            45
+          ]
+        ]
+      },
+      {
+        "key": "<16777223>",
+        "text": "Delete",
+        "vk": null,
+        "cb": [
+          [
+            "Delete",
+            46
+          ]
+        ]
+      },
+      {
+        "key": "<16777248>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777249>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777251>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<33554431>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<mouseClick>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      }
+    ]
+  },
+  "mouse_track_form": {
+    "width": 55,
+    "isReadOnly": true,
+    "placeholder": "",
+    "alignment_center": true,
+    "rows": [
+      {
+        "key": "d",
+        "text": "D",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "a",
+        "text": "A",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "Z",
+        "text": "Z",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "1",
+        "text": "1",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "9",
+        "text": "9",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777264>",
+        "text": "F1",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777269>",
+        "text": "F6",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777275>",
+        "text": "F12",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777276>",
+        "text": "F12",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777216>",
+        "text": "Esc",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": " ",
+        "text": "Space",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "\t",
+        "text": "Tab",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "\r",
+        "text": "Enter",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777221>",
+        "text": "Enter",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777219>",
+        "text": "Backspace",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777235>",
+        "text": "Up",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777237>",
+        "text": "Down",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777234>",
+        "text": "Left",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777236>",
+        "text": "Right",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777232>",
+        "text": "Home",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777233>",
+        "text": "End",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777238>",
+        "text": "PageUp",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777239>",
+        "text": "PageDown",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777222>",
+        "text": "Insert",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777223>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777248>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777249>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<16777251>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<33554431>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      },
+      {
+        "key": "<mouseClick>",
+        "text": "Delete",
+        "vk": null,
+        "cb": []
+      }
+    ]
+  }
+}

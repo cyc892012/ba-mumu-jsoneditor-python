@@ -1,0 +1,7 @@
+PyQt5==5.15.11
+keyboard==0.13.5
+pynput==1.8.2
+watchdog==6.0.0
+
+# jsonschema 为可选依赖；本次核对的解释器未安装它，未猜测版本。
+# 缺少该包时，程序会跳过 JSON Schema 结构校验，但仍检查 JSON 语法。

@@ -1,0 +1,12 @@
+"""操作类型常量 — 对应 C# OperationConstants，确保历史记录中类型名称一致"""
+
+LOAD_SCHEME = "加载方案"
+CREATE_KEY = "创建按键"
+MODIFY_KEY = "修改按键"
+PRESET_INJECT = "键位预设"
+PRESET_DEDUP = "去重写入"
+RANGE_CLEAR = "区域清空"
+ADB_GENERATE = "ADB生成"
+WIDE_SCREEN = "宽屏移植"
+AUTO_SYNC = "自动同步"
+BATCH_WRITE = "批量写入"

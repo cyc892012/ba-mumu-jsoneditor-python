@@ -1,0 +1,33 @@
+{
+    "editor_icon_scale": 1,
+    "icon": {
+        "background_color": "00000066",
+        "description": "",
+        "radius_correction": 1,
+        "rel_position": {
+            "rel_x": 0.44605621033544873,
+            "rel_y": 0.4080645161290323
+        },
+        "visibility": true
+    },
+    "key": {
+        "device": "keyboard",
+        "scan_code": 30,
+        "text": "A",
+        "virtual_key": 65
+    },
+    "press_actions": [
+        "start_loop:until_release",
+        "curve_first_point_sleep_time:1",
+        "curve_last_point_sleep_time:1",
+        "curve_rel:mouse;(0.593200,0.297917)",
+        "sleep:1",
+        "stop_loop"
+    ],
+    "rel_work_position": {
+        "rel_x": 0.44605621033544873,
+        "rel_y": 0.4080645161290323
+    },
+    "release_actions": [],
+    "type": "Macro"
+}
