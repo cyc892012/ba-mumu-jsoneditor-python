@@ -163,6 +163,13 @@ class MainWindow(QMainWindow):
 
     def _deferred_init(self):
         """首帧显示后的后台初始化（原 __init__ 尾部逻辑）"""
+        try:
+            from core.builtin_presets import seed_builtin_presets
+            from core.config_manager import resolve_app_dir
+            seed_builtin_presets(os.path.join(resolve_app_dir(), "data"))
+        except Exception as exc:
+            LogService.error_ex("BuiltinPresets", exc, "内置键位延迟播种失败")
+
         # 自动检测 MuMu 键位配置目录。
         # ★ 若用户此刻已经加载了文件（如启动后立即拖放 JSON），必须跳过——
         #   否则下面的 _load_json_file 会 record_initial 清空撤销栈，

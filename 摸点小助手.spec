@@ -8,7 +8,7 @@ a = Analysis(
     [str(spec_root / 'main.py')],
     pathex=[str(spec_root)],
     binaries=[],
-    datas=[(str(spec_root / 'ui' / 'assets'), 'ui/assets')],
+    datas=[(str(spec_root / 'ui' / 'assets'), 'ui/assets'), (str(spec_root / 'presets'), 'presets')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
