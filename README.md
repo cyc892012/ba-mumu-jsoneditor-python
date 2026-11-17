@@ -56,6 +56,8 @@ sys.exit(not result.wasSuccessful())
 '@ | python -B -
 ```
 
+ADB 查找顺序：手动指定路径 → 运行中的 MuMu 进程 → 注册表中的 MuMu 安装位置 → 常见安装目录 → 系统 PATH → 程序内置的 adb。仓库不包含 adb 二进制；如需内置兜底，请在打包前把 Android SDK Platform-Tools 中的 `adb.exe`、`AdbWinApi.dll`、`AdbWinUsbApi.dll` 放入 `tools/adb/`（许可证说明见该目录的 `NOTICE.txt`）。
+
 安装开发 / 打包依赖后生成 onedir 程序：
 
 ```powershell
@@ -75,6 +77,7 @@ ui/                     主界面与功能窗口
 ui/assets/              界面图片、图标和 SVG
 utils/                  通用工具
 presets/                内置基础键位预设
+tools/adb/              内置 adb 兜底说明（二进制需自行放入）
 tests/                  单元测试和测试数据
 main.py                 程序入口
 摸点小助手.spec          PyInstaller onedir 配置

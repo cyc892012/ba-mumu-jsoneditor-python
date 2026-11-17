@@ -265,6 +265,9 @@ class RegionTests(unittest.TestCase):
 
 class AdbRowTests(unittest.TestCase):
     def setUp(self):
+        auto_detection = patch.object(AdbTouchForm, "_auto_detect_on_show")
+        auto_detection.start()
+        self.addCleanup(auto_detection.stop)
         self.form = hidden(AdbTouchForm())
         self.form._ui_timer.stop()
         self.form._screen_width, self.form._screen_height = 1001, 1001

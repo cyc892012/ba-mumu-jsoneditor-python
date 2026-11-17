@@ -22,3 +22,7 @@ dist/
 *.swo
 Thumbs.db
 Desktop.ini
+
+# 内置 adb 兜底（Android Platform-Tools 二进制不入库，打包前自行放入）
+/tools/adb/*.exe
+/tools/adb/*.dll

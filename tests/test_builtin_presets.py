@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import sys
+import tempfile
 import uuid
 import unittest
 from pathlib import Path
@@ -10,7 +11,7 @@ from unittest import mock
 from core import builtin_presets
 
 
-TASK_TEMP_DIR = Path(__file__).resolve().parents[2] / "打包记录" / "20261117_分发版"
+TASK_TEMP_DIR = Path(tempfile.gettempdir()) / "momo_builtin_presets_test"
 
 
 class TaskTempCase(unittest.TestCase):

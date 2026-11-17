@@ -1,0 +1,8 @@
+内置 Android Debug Bridge 说明
+
+adb.exe、AdbWinApi.dll、AdbWinUsbApi.dll 来自 Android SDK Platform-Tools 36.0.0。
+Android Debug Bridge 版本：1.0.41。
+Copyright The Android Open Source Project.
+这三个文件按 Apache License 2.0 分发；许可证正文见 LICENSE-Apache-2.0.txt。
+官方许可证地址：https://www.apache.org/licenses/LICENSE-2.0
+程序优先使用用户电脑上已有的 ADB，未找到时才使用本目录的副本。

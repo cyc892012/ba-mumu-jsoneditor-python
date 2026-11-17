@@ -8,6 +8,7 @@ import queue
 import re
 import subprocess
 import threading
+import time
 from PyQt5.QtWidgets import (
     QHBoxLayout, QLabel, QComboBox,
     QCheckBox, QTableWidget, QTableWidgetItem,
@@ -26,6 +27,7 @@ from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, QEvent
 from PyQt5.QtGui import QFont
 import theme
 from adb.client import AdbClient
+from adb.adb_locator import locate_adb, find_mumu_install_dir
 from adb.parser import TouchEventParser, TouchCoordinate
 from core.json_editor import (
     create_key, write_keys, find_all_repeat_key_values, get_scan_code,
@@ -85,6 +87,7 @@ class _DetectWorker(QObject):
     status_update = pyqtSignal(str)
     detect_finished = pyqtSignal(list)
     adb_path_found = pyqtSignal(str)
+    location_found = pyqtSignal(object)
     detect_error = pyqtSignal(str, str)
 
 
@@ -148,6 +151,11 @@ class AdbTouchForm(BaseDialog):
         self._paused_handler = None
         self._generating = False
         self._detect_error_message = ''
+        self._detect_last_finished = None
+        self._detect_refresh_seconds = 30
+        self._show_detect_timer = QTimer(self)
+        self._show_detect_timer.setSingleShot(True)
+        self._show_detect_timer.timeout.connect(self._auto_detect_on_show)
         self._build()
 
         # 跨线程信号桥：键盘捕获回调来自 pynput 监听线程，必须经它转发到主线程（见坑 1）
@@ -635,121 +643,115 @@ class AdbTouchForm(BaseDialog):
     # ── 自动检测（后台线程）──
 
     def _on_auto_detect(self):
-        if self._is_detecting:
+        thread = getattr(self, "_detect_thread", None)
+        if (self._closed or self._is_detecting or self._is_connected or self._connecting
+                or (thread is not None and thread.is_alive())):
             return
         self._is_detecting = True
         self._detect_error_message = ""
-        self._detect_path = self._adb_path_lbl.text().strip()
         self._set_connection_controls()
         self._status_label.setText("正在检测 MuMu 模拟器端口...")
-        QApplication.processEvents()
-
         self._worker = _DetectWorker()
+        self._worker.current_path = self._adb_path_lbl.text().strip()
+        self._worker.history_ports = tuple(dict.fromkeys(
+            [self._port_edit.text().strip()] + [self._port_combo.itemData(i).port
+             for i in range(self._port_combo.count()) if isinstance(self._port_combo.itemData(i), MuMuPortItem)]))
         self._detect_thread = threading.Thread(
             target=self._do_auto_detect, args=(self._worker,), daemon=True, name="AdbDetect"
         )
         self._worker.status_update.connect(lambda value, worker=self._worker: self._on_detect_status(value) if self._worker is worker and not self._closed else None)
         self._worker.adb_path_found.connect(lambda value, worker=self._worker: self._on_adb_path_found(value) if self._worker is worker and not self._closed else None)
+        self._worker.location_found.connect(lambda value, worker=self._worker: self._on_adb_location_found(value) if self._worker is worker and not self._closed else None)
         self._worker.detect_finished.connect(lambda value, worker=self._worker: self._on_detect_finished(value) if self._worker is worker and not self._closed else None)
         self._worker.detect_error.connect(lambda message, kind, worker=self._worker: self._on_detect_error(message, kind) if self._worker is worker and not self._closed else None)
         self._detect_thread.start()
 
+    def _auto_detect_on_show(self):
+        if self._closed or not self.isVisible() or self._is_connected or self._connecting:
+            return
+        if self._is_detecting:
+            return
+        if self._detect_last_finished is not None and time.monotonic() - self._detect_last_finished < self._detect_refresh_seconds:
+            return
+        thread = getattr(self, "_detect_thread", None)
+        if thread is not None and thread.is_alive():
+            # 关闭窗口不会中止只读工作；等旧线程结束后再开始，避免跨次并发。
+            self._show_detect_timer.start(100)
+            return
+        self._on_auto_detect()
+
+    @staticmethod
+    def _listening_tcp_ports():
+        """只读系统 TCP 监听表，不发起连接，也不改变设备的 ADB 状态。"""
+        import ctypes
+        from ctypes import wintypes
+        try:
+            api = ctypes.WinDLL("iphlpapi", use_last_error=True).GetTcpTable
+            api.argtypes = [ctypes.c_void_p, ctypes.POINTER(wintypes.DWORD), wintypes.BOOL]
+            api.restype = wintypes.DWORD
+            size = wintypes.DWORD()
+            if api(None, ctypes.byref(size), False) != 122 or not 4 <= size.value <= 1048576:
+                return set()
+            buffer = ctypes.create_string_buffer(size.value)
+            if api(buffer, ctypes.byref(size), False):
+                return set()
+            count = int.from_bytes(buffer.raw[:4], "little")
+            result = set()
+            for index in range(min(count, (size.value - 4) // 20)):
+                offset = 4 + index * 20
+                state = int.from_bytes(buffer.raw[offset:offset + 4], "little")
+                address = int.from_bytes(buffer.raw[offset + 4:offset + 8], "little")
+                if state == 2 and address in (0, 0x0100007f):
+                    result.add(str(int.from_bytes(buffer.raw[offset + 8:offset + 10], "big")))
+            return result
+        except (OSError, AttributeError):
+            return set()
+
     def _do_auto_detect(self, worker: _DetectWorker):
         try:
-            adb_path = self._resolve_adb_path(getattr(self, "_detect_path", ""))
-            if not adb_path:
+            # 后台只使用启动时的设置快照，不读取或修改窗口控件。
+            location = locate_adb(worker.current_path)
+            worker.location_found.emit(location)
+            if not location:
                 worker.detect_error.emit("未找到 adb.exe，请手动指定路径或先启动 MuMu 模拟器。", "warning")
                 worker.detect_finished.emit([])
                 return
-            worker.adb_path_found.emit(adb_path)
-
-            install_base = self._find_mumu_install_dir(adb_path)
-            has_mumu12 = False
-            has_mumu6 = False
-            if install_base:
-                has_mumu12 = self._find_mumu_manager_path(install_base) is not None
-                has_mumu6 = os.path.isdir(os.path.join(install_base, "emulator", "nemu"))
-
+            worker.adb_path_found.emit(location.path)
+            install_base = location.install_dir or self._find_mumu_install_dir(location.path)
+            listening = self._listening_tcp_ports()
             port_map: Dict[str, MuMuPortItem] = {}
-            pre_existing = set()
             worker.status_update.emit("正在检测 MuMu 模拟器端口...")
-
-            if has_mumu12:
-                instances = self._query_mumu12_instances(install_base)
-                if instances and len(instances) > 0:
-                    for inst in instances:
-                        if inst.port and inst.port not in port_map:
-                            port_map[inst.port] = inst
-                    self._cached_instances = list(instances)
-                else:
-                    for i in range(10):
-                        port = self._query_mumu12_port(install_base, i)
-                        if port and port not in port_map:
-                            port_map[port] = MuMuPortItem(port=port)
-
-            try:
-                result = subprocess.run(
-                    [adb_path, "devices"],
-                    capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5,
-                    creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                for m in _ADB_DEVICE_REGEX.finditer(self._output_text(result.stdout)):
-                    p = m.group(1)
-                    pre_existing.add(p)
-                    if p not in port_map:
-                        port_map[p] = MuMuPortItem(port=p)
-            except Exception:
-                LogService.warn("AdbTouchDialog", "ADB devices 扫描失败")
-
-            if has_mumu6:
-                for port in ("7555", "21503", "21513", "21523", "21533"):
-                    if port in port_map:
-                        continue
-                    worker.status_update.emit(f"尝试端口 {port}...")
-                    success, unauth = self._try_adb_connect(adb_path, port)
-                    if success:
-                        port_map[port] = MuMuPortItem(port=port)
-                    elif unauth:
-                        worker.detect_error.emit("请在模拟器中点击「允许 USB 调试」。", "unauth")
-
-            if not has_mumu12 and not has_mumu6:
-                for i in range(20):
-                    port = str(16384 + i * 32)
-                    if port in port_map:
-                        continue
-                    worker.status_update.emit(f"尝试端口 {port}...")
-                    success, unauth = self._try_adb_connect(adb_path, port)
-                    if success:
-                        port_map[port] = MuMuPortItem(port=port)
-                        break
-                    elif unauth:
-                        worker.detect_error.emit("请在模拟器中点击「允许 USB 调试」。", "unauth")
-
-            for port in port_map:
-                if port not in pre_existing:
-                    try:
-                        subprocess.run(
-                            [adb_path, "disconnect", f"127.0.0.1:{port}"],
-                            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=3,
-                            creationflags=subprocess.CREATE_NO_WINDOW
-                        )
-                    except Exception:
-                        pass
-
-            if len(port_map) == 0:
-                worker.status_update.emit("无法连接到模拟器，请检查 USB 调试授权。")
-
+            if install_base and self._find_mumu_manager_path(install_base):
+                instances = self._query_mumu12_instances(install_base) or []
+                for item in instances:
+                    if item.port in listening:
+                        port_map[item.port] = item
+            # 没有管理器或只找到内置 ADB 时，保留默认和历史端口的发现能力。
+            # 仅查看监听表，不运行 adb devices/connect/disconnect，也不触发调试授权。
+            if not port_map:
+                candidates = list(worker.history_ports) + [str(16384 + i * 32) for i in range(20)]
+                if install_base and os.path.isdir(os.path.join(install_base, "emulator", "nemu")):
+                    candidates += ["7555", "21503", "21513", "21523", "21533"]
+                for port in candidates:
+                    if port in listening and port not in port_map:
+                        port_map[port] = MuMuPortItem(port)
             worker.detect_finished.emit(list(port_map.values()))
         except Exception as ex:
             LogService.error_ex("AdbTouchDialog", ex, "自动检测异常")
             worker.detect_error.emit(f"检测异常: {ex}", "warning")
             worker.detect_finished.emit([])
 
+    def _on_adb_location_found(self, location):
+        self._adb_location = location
+        if location:
+            LogService.info("AdbTouchDialog", location.message + "：" + location.path)
+
     def _on_detect_status(self, text):
         if not self._detect_error_message:
-            self._status_label.setText(text)
+            self._status_label.setText(self._adb_source_message() + text)
 
     def _on_adb_path_found(self, adb_path):
+        self._status_label.setText(self._adb_source_message().rstrip('；'))
         if not self._adb_path_lbl.text().strip() or not os.path.isfile(self._adb_path_lbl.text().strip()):
             self._adb_path_lbl.setText(adb_path)
 
@@ -759,6 +761,7 @@ class AdbTouchForm(BaseDialog):
 
     def _on_detect_finished(self, items):
         self._is_detecting = False
+        self._detect_last_finished = time.monotonic()
         self._set_connection_controls()
         if items:
             self._cached_instances = list(items)
@@ -773,88 +776,26 @@ class AdbTouchForm(BaseDialog):
             finally:
                 self._port_combo.blockSignals(blocked)
             self._port_edit.setText(items[chosen].port)
-            self._status_label.setText(f"已检测到 {len(items)} 个端口：" + ", ".join(item.port for item in items) +
+            self._status_label.setText(self._adb_source_message() + f"已找到 {len(items)} 个模拟器实例：" + ", ".join(item.port for item in items) +
                 ("；" + self._detect_error_message if self._detect_error_message else ""))
         else:
-            self._status_label.setText(self._detect_error_message or "未检测到 MuMu 模拟器，请检查调试设置。")
+            self._status_label.setText(self._adb_source_message() + (self._detect_error_message or "未检测到运行中的 MuMu，请先启动模拟器后点「自动获取」"))
 
     # ── ADB 路径解析 ──
 
     def _resolve_adb_path(self, current=None) -> Optional[str]:
         current = self._adb_path_lbl.text().strip() if current is None else current
-        if current and os.path.isfile(current):
-            return current
+        self._adb_location = locate_adb(current)
+        if self._adb_location:
+            LogService.info("AdbTouchDialog", self._adb_location.message + "：" + self._adb_location.path)
+            return self._adb_location.path
+        return None
 
-        proc_adb = self._find_adb_via_process("MuMuNxService")
-        if proc_adb:
-            return proc_adb
-        proc_adb = self._find_adb_via_process("crashpad_handler")
-        if proc_adb:
-            return proc_adb
+    def _adb_source_message(self):
+        location = getattr(self, "_adb_location", None)
+        return location.message + "；" if location else ""
 
-        # 与 config 同源解析：源码版(=项目根/或 MOMO_DATA_DIR) 与 exe 版(=exe 所在目录) 口径一致
-        from core.config_manager import resolve_app_dir
-        app_dir = resolve_app_dir()
-
-        local_adb = os.path.join(app_dir, "adb.exe")
-        if os.path.isfile(local_adb):
-            return local_adb
-
-        import string
-        for drive_letter in string.ascii_uppercase:
-            drive_root = f"{drive_letter}:\\"
-            if not os.path.exists(drive_root):
-                continue
-            mumu_root = os.path.join(drive_root, "mumu")
-            if not os.path.isdir(mumu_root):
-                continue
-            try:
-                for entry in os.listdir(mumu_root):
-                    if not entry.lower().startswith("mumuplayer"):
-                        continue
-                    candidate_dir = os.path.join(mumu_root, entry)
-                    p = os.path.join(candidate_dir, "nx_main", "adb.exe")
-                    if os.path.isfile(p):
-                        return p
-                    device_shell = os.path.join(candidate_dir, "nx_device")
-                    if os.path.isdir(device_shell):
-                        try:
-                            for ver_dir in os.listdir(device_shell):
-                                p = os.path.join(device_shell, ver_dir, "shell", "adb.exe")
-                                if os.path.isfile(p):
-                                    return p
-                        except Exception:
-                            pass
-            except Exception:
-                pass
-
-        program_dirs = []
-        pf = os.environ.get("ProgramFiles", "")
-        if pf:
-            program_dirs.append(os.path.join(pf, "Netease"))
-        pfx86 = os.environ.get("ProgramFiles(x86)", "")
-        if pfx86:
-            program_dirs.append(os.path.join(pfx86, "Netease"))
-        for base_dir in program_dirs:
-            if not os.path.isdir(base_dir):
-                continue
-            try:
-                for entry in os.listdir(base_dir):
-                    if not entry.lower().startswith("mumuplayer"):
-                        continue
-                    mu_dir = os.path.join(base_dir, entry)
-                    for sub in (
-                        os.path.join("shell", "adb.exe"),
-                        os.path.join("emulator", "nemu", "vmonitor", "bin", "adb_server.exe"),
-                        os.path.join("emulator", "nemu", "vmonitor", "bin", "adb.exe"),
-                    ):
-                        p = os.path.join(mu_dir, sub)
-                        if os.path.isfile(p):
-                            return p
-            except Exception:
-                pass
-        return self._find_adb_near_exe(app_dir)
-
+    # 兼容旧测试的辅助入口；实际定位流程仅调用 adb_locator，不再调用此方法。
     @staticmethod
     def _find_adb_via_process(process_name):
         if not re.fullmatch(r"[A-Za-z0-9_.-]+", process_name):
@@ -901,19 +842,7 @@ class AdbTouchForm(BaseDialog):
 
     @staticmethod
     def _find_mumu_install_dir(start_path: str) -> Optional[str]:
-        d = os.path.dirname(start_path)
-        while d:
-            if os.path.isfile(os.path.join(d, "shell", "adb.exe")):
-                return d
-            if os.path.isfile(os.path.join(d, "nx_main", "adb.exe")):
-                return d
-            if os.path.isdir(os.path.join(d, "emulator", "nemu")):
-                return d
-            parent = os.path.dirname(d)
-            if parent == d:
-                break
-            d = parent
-        return None
+        return find_mumu_install_dir(start_path)
 
     @staticmethod
     def _find_mumu_manager_path(install_base: str) -> Optional[str]:
@@ -1360,6 +1289,7 @@ class AdbTouchForm(BaseDialog):
 
     def closeEvent(self, event):
         self._closed = True
+        self._show_detect_timer.stop()
         self._save_config()
         self._ui_timer.stop()
         self._is_detecting = False
@@ -1389,7 +1319,8 @@ class AdbTouchForm(BaseDialog):
     def _remember_connected_port(self, port, adb_path):
         cached = list(self._cached_instances)
         if not any(item.port == port and item.instance_name for item in cached):
-            base = self._find_mumu_install_dir(adb_path)
+            location = getattr(self, "_adb_location", None)
+            base = (location.install_dir if location and location.path == adb_path else None) or self._find_mumu_install_dir(adb_path)
             if base:
                 cached = self._query_mumu12_instances(base) or cached
         selected = next((item for item in cached if item.port == port), MuMuPortItem(port))
@@ -1516,6 +1447,7 @@ class AdbTouchForm(BaseDialog):
         delete_width = max(header.fontMetrics().horizontalAdvance("删除") + 8,
                            header.sectionSizeHint(self.COL_DELETE))
         self._tbl.setColumnWidth(self.COL_DELETE, delete_width)
+        self._show_detect_timer.start(0)
 
     @staticmethod
     def _output_text(value):

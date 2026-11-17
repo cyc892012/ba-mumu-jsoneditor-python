@@ -167,6 +167,9 @@ def pump():
 class TouchMigrationTests(unittest.TestCase):
     def setUp(self):
         self.patches = []
+        auto_detection = patch.object(adb_ui.AdbTouchForm, "_auto_detect_on_show")
+        auto_detection.start()
+        self.addCleanup(auto_detection.stop)
         for target, name, value in ((quick_ui, "KeyboardListener", FakeListener),
                                     (quick_ui.ConfigManager, "shared", lambda: SimpleNamespace(fx="1280", fy="720")),
                                     (quick_ui, "get_cursor_pos", lambda: (960, 540)),
